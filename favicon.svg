@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <title>Idas Konzeptplaner</title>
+  <defs>
+    <linearGradient id="background" x1="72" y1="52" x2="448" y2="468" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#31266e" />
+      <stop offset="0.58" stop-color="#6556d9" />
+      <stop offset="1" stop-color="#a17be7" />
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#background)" />
+  <path d="M127 137c44-15 89-10 129 16v212c-40-26-85-31-129-16V137Z" fill="#fff" />
+  <path d="M385 137c-44-15-89-10-129 16v212c40-26 85-31 129-16V137Z" fill="#eeebff" />
+  <path d="M256 153v212" stroke="#6556d9" stroke-width="12" stroke-linecap="round" />
+  <path d="m169 211 54 0M169 255h54M289 211h54M289 255h54" stroke="#a17be7" stroke-width="16" stroke-linecap="round" />
+  <circle cx="369" cy="139" r="42" fill="#ffd89d" />
+  <path d="M369 116v25M356 132h26" stroke="#4739aa" stroke-width="10" stroke-linecap="round" />
+</svg>
