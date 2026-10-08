@@ -121,17 +121,17 @@ function createPdfExport() {
 function pdfBreakpoints(exportFrame, canvas) {
   const frameBounds = exportFrame.getBoundingClientRect();
   const canvasScale = canvas.width / frameBounds.width;
-  const selector = "section, p, li, .timeline-item, .game-item";
+  const selector = ".concept-summary, li, .timeline-item, .game-item, .differentiation, .assessment";
 
   return [...new Set(
     Array.from(exportFrame.querySelectorAll(selector))
-      .map((element) => Math.round((element.getBoundingClientRect().bottom - frameBounds.top) * canvasScale))
+      .map((element) => Math.round((element.getBoundingClientRect().top - frameBounds.top) * canvasScale))
       .filter((position) => position > 0 && position < canvas.height),
   )].sort((first, second) => first - second);
 }
 
 function pageSliceHeight(sourceY, maximumHeight, breakpoints, canvasHeight) {
-  const minimumHeight = Math.floor(maximumHeight * 0.65);
+  const minimumHeight = Math.floor(maximumHeight * 0.4);
   const maximumY = Math.min(sourceY + maximumHeight, canvasHeight);
   const safeBreakpoint = breakpoints
     .filter((position) => position >= sourceY + minimumHeight && position <= maximumY)
