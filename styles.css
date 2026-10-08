@@ -116,6 +116,10 @@ label {
   font-weight: 750;
 }
 
+#custom-category-field[hidden] {
+  display: none;
+}
+
 input,
 select,
 textarea,
