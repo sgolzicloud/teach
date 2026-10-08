@@ -49,18 +49,6 @@ function renderTimeline(container, phases) {
   );
 }
 
-function renderVocabulary(container, entries) {
-  container.replaceChildren(
-    ...entries.map((entry) => {
-      const item = document.createElement("li");
-      const term = document.createElement("strong");
-      term.textContent = `${entry.term}: `;
-      item.append(term, `${entry.explanation} – ${entry.example}`);
-      return item;
-    }),
-  );
-}
-
 function renderGames(container, games) {
   container.replaceChildren(
     ...games.map((game) => {
@@ -148,7 +136,8 @@ function renderConcept(concept) {
   appendList(fragment.querySelector(".materials"), concept.materials);
   renderTimeline(fragment.querySelector(".timeline"), concept.timeline);
   appendList(fragment.querySelector(".language-support"), concept.languageSupport);
-  renderVocabulary(fragment.querySelector(".vocabulary"), concept.vocabulary);
+  appendList(fragment.querySelector(".language-actions"), concept.languageActions);
+  appendList(fragment.querySelector(".vocabulary"), concept.vocabulary);
   renderGames(fragment.querySelector(".games"), concept.games);
   fragment.querySelector(".differentiation").textContent = concept.differentiation;
   fragment.querySelector(".assessment").textContent = concept.assessment;
