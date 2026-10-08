@@ -29,7 +29,7 @@ Der Browser erhält **niemals** den OpenAI-API-Schlüssel.
    npx wrangler deploy
    ```
 
-4. Optional kann mit `npx wrangler secret put OPENAI_MODEL` ein anderes Modell als `gpt-4.1-mini` gewählt werden.
+4. Optional kann mit `npx wrangler secret put OPENAI_MODEL` ein anderes Modell als `gpt-5.4-nano` gewählt werden.
 
 Der OpenAI-Key darf nicht in `app.js`, in Git-Commits oder als GitHub-Pages-Secret abgelegt werden.
 
