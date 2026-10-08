@@ -118,6 +118,28 @@ function createPdfExport() {
   return exportFrame;
 }
 
+function pdfBreakpoints(exportFrame, canvas) {
+  const frameBounds = exportFrame.getBoundingClientRect();
+  const canvasScale = canvas.width / frameBounds.width;
+  const selector = "section, p, li, .timeline-item, .game-item";
+
+  return [...new Set(
+    Array.from(exportFrame.querySelectorAll(selector))
+      .map((element) => Math.round((element.getBoundingClientRect().bottom - frameBounds.top) * canvasScale))
+      .filter((position) => position > 0 && position < canvas.height),
+  )].sort((first, second) => first - second);
+}
+
+function pageSliceHeight(sourceY, maximumHeight, breakpoints, canvasHeight) {
+  const minimumHeight = Math.floor(maximumHeight * 0.65);
+  const maximumY = Math.min(sourceY + maximumHeight, canvasHeight);
+  const safeBreakpoint = breakpoints
+    .filter((position) => position >= sourceY + minimumHeight && position <= maximumY)
+    .pop();
+
+  return (safeBreakpoint ?? maximumY) - sourceY;
+}
+
 function renderConcept(concept) {
   const fragment = template.content.cloneNode(true);
   fragment.querySelector("h3").textContent = concept.title;
@@ -205,9 +227,10 @@ document.querySelector("#pdf-button").addEventListener("click", async () => {
     const imageWidth = pageWidth - margin * 2;
     const printableHeight = pageHeight - margin * 2;
     const sourcePageHeight = Math.floor((printableHeight * canvas.width) / imageWidth);
+    const breakpoints = pdfBreakpoints(exportFrame, canvas);
 
-    for (let sourceY = 0; sourceY < canvas.height; sourceY += sourcePageHeight) {
-      const sliceHeight = Math.min(sourcePageHeight, canvas.height - sourceY);
+    for (let sourceY = 0; sourceY < canvas.height;) {
+      const sliceHeight = pageSliceHeight(sourceY, sourcePageHeight, breakpoints, canvas.height);
       const pageCanvas = document.createElement("canvas");
       pageCanvas.width = canvas.width;
       pageCanvas.height = sliceHeight;
@@ -234,6 +257,8 @@ document.querySelector("#pdf-button").addEventListener("click", async () => {
         imageWidth,
         (sliceHeight * imageWidth) / canvas.width,
       );
+
+      sourceY += sliceHeight;
     }
 
     pdf.save(exportFileName("pdf"));
