@@ -156,32 +156,71 @@ form.addEventListener("submit", async (event) => {
 
 document.querySelector("#print-button").addEventListener("click", () => window.print());
 
-document.querySelector("#pdf-button").addEventListener("click", () => {
+document.querySelector("#pdf-button").addEventListener("click", async () => {
   const { jsPDF } = window.jspdf ?? {};
-  if (!jsPDF) {
+  if (!jsPDF || !window.html2canvas) {
     statusMessage.classList.add("error");
     statusMessage.textContent = "Der PDF-Download ist derzeit nicht verfügbar.";
     return;
   }
 
+  const button = document.querySelector("#pdf-button");
+  button.disabled = true;
+  statusMessage.classList.remove("error");
+  statusMessage.textContent = "PDF wird erstellt …";
+
+  try {
+    const canvas = await window.html2canvas(conceptOutput, {
+      backgroundColor: "#ffffff",
+      scale: 2,
+      useCORS: true,
+    });
   const pdf = new jsPDF({ unit: "mm", format: "a4" });
   const margin = 15;
   const pageWidth = pdf.internal.pageSize.getWidth();
   const pageHeight = pdf.internal.pageSize.getHeight();
-  const lineHeight = 6;
-  let y = margin;
+    const imageWidth = pageWidth - margin * 2;
+    const printableHeight = pageHeight - margin * 2;
+    const sourcePageHeight = Math.floor((printableHeight * canvas.width) / imageWidth);
 
-  conceptOutput.innerText.split("\n").forEach((paragraph) => {
-    const lines = pdf.splitTextToSize(paragraph || " ", pageWidth - margin * 2);
-    if (y + lines.length * lineHeight > pageHeight - margin) {
+    for (let sourceY = 0; sourceY < canvas.height; sourceY += sourcePageHeight) {
+      const sliceHeight = Math.min(sourcePageHeight, canvas.height - sourceY);
+      const pageCanvas = document.createElement("canvas");
+      pageCanvas.width = canvas.width;
+      pageCanvas.height = sliceHeight;
+      pageCanvas.getContext("2d").drawImage(
+        canvas,
+        0,
+        sourceY,
+        canvas.width,
+        sliceHeight,
+        0,
+        0,
+        canvas.width,
+        sliceHeight,
+      );
+
+      if (sourceY > 0) {
       pdf.addPage();
-      y = margin;
     }
-    pdf.text(lines, margin, y);
-    y += lines.length * lineHeight;
-  });
+      pdf.addImage(
+        pageCanvas.toDataURL("image/png"),
+        "PNG",
+        margin,
+        margin,
+        imageWidth,
+        (sliceHeight * imageWidth) / canvas.width,
+      );
+    }
 
-  pdf.save(`${conceptFileName() || "konzeption-lerneinheit"}.pdf`);
+    pdf.save(`${conceptFileName() || "konzeption-lerneinheit"}.pdf`);
+    statusMessage.textContent = "PDF wurde heruntergeladen.";
+  } catch {
+    statusMessage.classList.add("error");
+    statusMessage.textContent = "Die PDF-Datei konnte nicht erstellt werden.";
+  } finally {
+    button.disabled = false;
+  }
 });
 
 document.querySelector("#word-button").addEventListener("click", async () => {
@@ -192,16 +231,102 @@ document.querySelector("#word-button").addEventListener("click", async () => {
     return;
   }
 
-  const paragraphs = conceptOutput.innerText
-    .split("\n")
-    .filter((line) => line.trim())
-    .map(
-      (line) =>
-        new docx.Paragraph({
-          text: line,
-          spacing: { after: 120 },
+  const textRuns = (element, options = {}) =>
+    Array.from(element.childNodes)
+      .filter((node) => node.textContent.trim())
+      .map(
+        (node) =>
+          new docx.TextRun({
+            text: node.textContent,
+            bold: node.nodeType === Node.ELEMENT_NODE && node.tagName === "STRONG",
+            ...options,
+          }),
+      );
+  const textParagraph = (element, { runOptions = {}, ...options } = {}) =>
+    new docx.Paragraph({
+      children: textRuns(element, runOptions),
+      spacing: { after: 120 },
+      ...options,
+    });
+  const paragraphs = [
+    new docx.Paragraph({
+      children: [
+        new docx.TextRun({
+          text: conceptOutput.querySelector("h3").textContent,
+          bold: true,
+          color: "4739AA",
+          size: 36,
         }),
-    );
+      ],
+      spacing: { after: 180 },
+    }),
+    textParagraph(conceptOutput.querySelector(".concept-summary"), { runOptions: { italics: true } }),
+  ];
+
+  Array.from(conceptOutput.children)
+    .filter((element) => element.tagName === "SECTION")
+    .forEach((section) => {
+      const heading = section.querySelector("h4");
+      paragraphs.push(
+        new docx.Paragraph({
+          children: [
+            new docx.TextRun({
+              text: heading.textContent,
+              bold: true,
+              color: "4739AA",
+              size: 26,
+            }),
+          ],
+          spacing: { before: 260, after: 120 },
+        }),
+      );
+
+      const list = section.querySelector("ul");
+      if (list) {
+        Array.from(list.children).forEach((item) => {
+          paragraphs.push(textParagraph(item, { bullet: { level: 0 } }));
+        });
+      }
+
+      const timeline = section.querySelector(".timeline");
+      if (timeline) {
+        Array.from(timeline.children).forEach((item) => {
+          const time = item.querySelector(".timeline-time").textContent;
+          const phase = item.querySelector("h5").textContent;
+          paragraphs.push(
+            new docx.Paragraph({
+              children: [new docx.TextRun({ text: `${time} – ${phase}`, bold: true, color: "4739AA" })],
+              shading: { fill: "FFF0D7" },
+              spacing: { before: 100, after: 80 },
+            }),
+          );
+          Array.from(item.querySelectorAll("p")).forEach((paragraph) => {
+            paragraphs.push(textParagraph(paragraph));
+          });
+        });
+      }
+
+      const games = section.querySelector(".games");
+      if (games) {
+        Array.from(games.children).forEach((game) => {
+          paragraphs.push(
+            new docx.Paragraph({
+              children: [new docx.TextRun({ text: game.querySelector("h5").textContent, bold: true, color: "9D5C08" })],
+              shading: { fill: "FFF6E8" },
+              spacing: { before: 100, after: 80 },
+            }),
+          );
+          Array.from(game.querySelectorAll("p")).forEach((paragraph) => {
+            paragraphs.push(textParagraph(paragraph));
+          });
+        });
+      }
+
+      Array.from(section.children)
+        .filter((element) => element.tagName === "P")
+        .forEach((paragraph) => paragraphs.push(textParagraph(paragraph)));
+    });
+
   const document = new docx.Document({
     sections: [{ children: paragraphs }],
   });
