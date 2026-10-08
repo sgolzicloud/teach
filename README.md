@@ -8,6 +8,8 @@ Eine GitHub-Pages-Webseite zum Erstellen, Bearbeiten und Drucken von Konzeptione
 - `worker/`: Cloudflare Worker mit dem API-Endpunkt `POST /api/concept`
 
 Der Browser erhält **niemals** den OpenAI-API-Schlüssel.
+Der Worker weist das verwendete LLM explizit an, alle Inhalte der Konzeption auf Deutsch
+(`de-DE`) zu erzeugen.
 
 ## Cloudflare Worker bereitstellen
 

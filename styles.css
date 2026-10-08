@@ -234,6 +234,19 @@ button:disabled {
   border-radius: 18px;
 }
 
+.pdf-export {
+  position: fixed;
+  top: 0;
+  left: -10000px;
+  width: 794px;
+  padding: 32px;
+  background: var(--background);
+}
+
+.pdf-export .concept-output {
+  padding: 48px;
+}
+
 .concept-output h3 {
   margin-bottom: 0.25rem;
   font-size: 1.55rem;

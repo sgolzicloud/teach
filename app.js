@@ -90,12 +90,32 @@ function renderGames(container, games) {
   );
 }
 
-function conceptFileName() {
-  const title = conceptOutput.querySelector("h3")?.textContent || "konzeption-lerneinheit";
-  return title
-    .toLocaleLowerCase("de-DE")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "");
+function exportFileName(extension) {
+  const now = new Date();
+  const timestamp = [
+    now.getFullYear(),
+    String(now.getMonth() + 1).padStart(2, "0"),
+    String(now.getDate()).padStart(2, "0"),
+  ].join("-");
+  const time = [
+    String(now.getHours()).padStart(2, "0"),
+    String(now.getMinutes()).padStart(2, "0"),
+    String(now.getSeconds()).padStart(2, "0"),
+  ].join("-");
+
+  return `Konzept_${timestamp}_${time}.${extension}`;
+}
+
+function createPdfExport() {
+  const exportFrame = document.createElement("div");
+  exportFrame.className = "pdf-export";
+
+  const conceptCopy = conceptOutput.cloneNode(true);
+  conceptCopy.removeAttribute("contenteditable");
+  exportFrame.append(conceptCopy);
+  document.body.append(exportFrame);
+
+  return exportFrame;
 }
 
 function renderConcept(concept) {
@@ -169,16 +189,19 @@ document.querySelector("#pdf-button").addEventListener("click", async () => {
   statusMessage.classList.remove("error");
   statusMessage.textContent = "PDF wird erstellt …";
 
+  const exportFrame = createPdfExport();
+
   try {
-    const canvas = await window.html2canvas(conceptOutput, {
+    await document.fonts?.ready;
+    const canvas = await window.html2canvas(exportFrame, {
       backgroundColor: "#ffffff",
       scale: 2,
       useCORS: true,
     });
-  const pdf = new jsPDF({ unit: "mm", format: "a4" });
-  const margin = 15;
-  const pageWidth = pdf.internal.pageSize.getWidth();
-  const pageHeight = pdf.internal.pageSize.getHeight();
+    const pdf = new jsPDF({ unit: "mm", format: "a4" });
+    const margin = 15;
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
     const imageWidth = pageWidth - margin * 2;
     const printableHeight = pageHeight - margin * 2;
     const sourcePageHeight = Math.floor((printableHeight * canvas.width) / imageWidth);
@@ -201,8 +224,8 @@ document.querySelector("#pdf-button").addEventListener("click", async () => {
       );
 
       if (sourceY > 0) {
-      pdf.addPage();
-    }
+        pdf.addPage();
+      }
       pdf.addImage(
         pageCanvas.toDataURL("image/png"),
         "PNG",
@@ -213,12 +236,13 @@ document.querySelector("#pdf-button").addEventListener("click", async () => {
       );
     }
 
-    pdf.save(`${conceptFileName() || "konzeption-lerneinheit"}.pdf`);
+    pdf.save(exportFileName("pdf"));
     statusMessage.textContent = "PDF wurde heruntergeladen.";
   } catch {
     statusMessage.classList.add("error");
     statusMessage.textContent = "Die PDF-Datei konnte nicht erstellt werden.";
   } finally {
+    exportFrame.remove();
     button.disabled = false;
   }
 });
@@ -327,18 +351,22 @@ document.querySelector("#word-button").addEventListener("click", async () => {
         .forEach((paragraph) => paragraphs.push(textParagraph(paragraph)));
     });
 
-  const document = new docx.Document({
+  const wordDocument = new docx.Document({
     sections: [{ children: paragraphs }],
   });
 
   try {
-    const blob = await docx.Packer.toBlob(document);
+    const blob = await docx.Packer.toBlob(wordDocument);
     const downloadUrl = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = downloadUrl;
-    link.download = `${conceptFileName() || "konzeption-lerneinheit"}.docx`;
+    link.download = exportFileName("docx");
+    document.body.append(link);
     link.click();
-    URL.revokeObjectURL(downloadUrl);
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(downloadUrl), 0);
+    statusMessage.classList.remove("error");
+    statusMessage.textContent = "Word-Datei wurde heruntergeladen.";
   } catch {
     statusMessage.classList.add("error");
     statusMessage.textContent = "Die Word-Datei konnte nicht erstellt werden.";
