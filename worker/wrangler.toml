@@ -1,0 +1,10 @@
+name = "teach-concept-api"
+main = "src/index.js"
+compatibility_date = "2025-09-01"
+
+# Set this to your deployed GitHub Pages URL before deploying:
+# npx wrangler secret put ALLOWED_ORIGIN
+# Required secret:
+# npx wrangler secret put OPENAI_API_KEY
+# Optional secret:
+# npx wrangler secret put OPENAI_MODEL

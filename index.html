@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="KI-gestützte Unterrichtskonzepte für 45-minütige Deutschstunden erstellen, bearbeiten und drucken."
+    />
+    <title>Unterrichtsplaner | Deutsch</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container">
+        <p class="eyebrow">Unterricht vorbereiten</p>
+        <h1>Unterrichtsplaner</h1>
+        <p class="intro">
+          Erstelle eine anpassbare Konzeption für eine 45-minütige Deutschstunde.
+        </p>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="panel" aria-labelledby="input-heading">
+        <h2 id="input-heading">Stunde beschreiben</h2>
+        <form id="concept-form">
+          <div class="form-grid">
+            <label>
+              Themenkategorie
+              <select id="category" name="category" required>
+                <option value="Alles über mich">Alles über mich</option>
+                <option value="Meine Familie">Meine Familie</option>
+                <option value="Schule">Schule</option>
+                <option value="Einkaufen">Einkaufen</option>
+                <option value="Jahreszeiten">Jahreszeiten</option>
+                <option value="Freizeit">Freizeit</option>
+                <option value="Andere">Anderes Thema</option>
+              </select>
+            </label>
+
+            <label>
+              Klassenstufe
+              <input id="grade" name="grade" type="text" maxlength="60" placeholder="z. B. 3. Klasse" required />
+            </label>
+
+            <label>
+              Lernvoraussetzungen
+              <input
+                id="level"
+                name="level"
+                type="text"
+                maxlength="160"
+                placeholder="z. B. DaZ, heterogene Lerngruppe"
+              />
+            </label>
+
+            <label>
+              Anzahl der Lernenden
+              <input id="student-count" name="studentCount" type="number" min="1" max="60" placeholder="z. B. 22" />
+            </label>
+          </div>
+
+          <label class="full-width">
+            Kurze Themenbeschreibung
+            <textarea
+              id="topic"
+              name="topic"
+              rows="5"
+              minlength="10"
+              maxlength="1200"
+              placeholder="z. B. Die Kinder lernen, ihre Familie mit einfachen Sätzen vorzustellen und Familienmitglieder zu benennen."
+              required
+            ></textarea>
+          </label>
+
+          <label class="full-width">
+            Besondere Wünsche <span class="optional">(optional)</span>
+            <textarea
+              id="preferences"
+              name="preferences"
+              rows="3"
+              maxlength="600"
+              placeholder="z. B. Bewegungsspiel einplanen, Bildkarten sind vorhanden."
+            ></textarea>
+          </label>
+
+          <div class="actions">
+            <button id="generate-button" type="submit">Konzeption erstellen</button>
+            <p id="form-status" class="status" aria-live="polite"></p>
+          </div>
+        </form>
+      </section>
+
+      <section id="result-section" class="panel result-section" aria-labelledby="result-heading" hidden>
+        <div class="result-header">
+          <div>
+            <p class="eyebrow">Entwurf</p>
+            <h2 id="result-heading">Unterrichtskonzeption</h2>
+          </div>
+          <div class="result-actions">
+            <button id="copy-button" type="button" class="secondary">Kopieren</button>
+            <button id="print-button" type="button" class="secondary">Drucken</button>
+          </div>
+        </div>
+        <p class="edit-hint">Klicke auf einen Abschnitt, um ihn direkt anzupassen.</p>
+        <article id="concept-output" class="concept-output" contenteditable="true" spellcheck="true"></article>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p>KI-generierte Vorschläge bitte fachlich prüfen und an die Lerngruppe anpassen.</p>
+      </div>
+    </footer>
+
+    <template id="concept-template">
+      <h3></h3>
+      <p class="concept-summary"></p>
+
+      <section>
+        <h4>Lernziele</h4>
+        <ul class="learning-objectives"></ul>
+      </section>
+
+      <section>
+        <h4>Vorbereitung &amp; Material</h4>
+        <ul class="materials"></ul>
+      </section>
+
+      <section>
+        <h4>Stundenverlauf</h4>
+        <div class="timeline"></div>
+      </section>
+
+      <section>
+        <h4>Sprachliche Unterstützung</h4>
+        <ul class="language-support"></ul>
+      </section>
+
+      <section>
+        <h4>Spiel- und Übungsideen</h4>
+        <ul class="games"></ul>
+      </section>
+
+      <section>
+        <h4>Differenzierung</h4>
+        <p class="differentiation"></p>
+      </section>
+
+      <section>
+        <h4>Lernstand überprüfen</h4>
+        <p class="assessment"></p>
+      </section>
+    </template>
+
+    <script src="app.js"></script>
+  </body>
+</html>
