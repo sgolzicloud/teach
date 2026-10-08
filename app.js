@@ -4,6 +4,23 @@ const statusMessage = document.querySelector("#form-status");
 const resultSection = document.querySelector("#result-section");
 const conceptOutput = document.querySelector("#concept-output");
 const template = document.querySelector("#concept-template");
+const categorySelect = document.querySelector("#category");
+const customCategoryField = document.querySelector("#custom-category-field");
+const customCategoryInput = document.querySelector("#custom-category");
+
+function updateCustomCategoryField() {
+  const isCustomCategory = categorySelect.value === "Andere";
+  customCategoryField.hidden = !isCustomCategory;
+  customCategoryInput.disabled = !isCustomCategory;
+  customCategoryInput.required = isCustomCategory;
+
+  if (!isCustomCategory) {
+    customCategoryInput.value = "";
+  }
+}
+
+categorySelect.addEventListener("change", updateCustomCategoryField);
+updateCustomCategoryField();
 
 function appendList(container, values) {
   container.replaceChildren(
@@ -156,6 +173,10 @@ form.addEventListener("submit", async (event) => {
 
   const values = new FormData(form);
   const payload = Object.fromEntries(values.entries());
+  if (payload.category === "Andere") {
+    payload.category = payload.customCategory.trim();
+  }
+  delete payload.customCategory;
   payload.studentCount = payload.studentCount ? Number(payload.studentCount) : null;
   payload.durationMinutes = Number(payload.durationMinutes);
 
