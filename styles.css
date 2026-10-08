@@ -237,6 +237,23 @@ button:disabled {
   margin-bottom: 0.4rem;
 }
 
+.game-item {
+  padding: 1rem;
+  margin-top: 0.75rem;
+  background: var(--accent);
+  border-radius: 8px;
+}
+
+.game-item h5 {
+  margin: 0 0 0.5rem;
+  color: var(--primary-dark);
+  font-size: 1rem;
+}
+
+.game-item p {
+  margin: 0.35rem 0;
+}
+
 .site-footer {
   padding: 1rem 0 3rem;
 }

@@ -31,24 +31,32 @@
               <select id="category" name="category" required>
                 <option value="Alles über mich">Alles über mich</option>
                 <option value="Meine Familie">Meine Familie</option>
-                <option value="Schule">Schule</option>
                 <option value="Einkaufen">Einkaufen</option>
                 <option value="Jahreszeiten">Jahreszeiten</option>
                 <option value="Freizeit">Freizeit</option>
+                <option value="Wohnen">Wohnen</option>
+                <option value="Präpositionen">Präpositionen</option>
+                <option value="Haustiere">Haustiere</option>
+                <option value="Farben">Farben</option>
+                <option value="Zahlen & Formen">Zahlen &amp; Formen</option>
+                <option value="Kleidung">Kleidung</option>
+                <option value="Lebensmittel">Lebensmittel</option>
+                <option value="Im Schulhaus">Im Schulhaus</option>
+                <option value="Im Klassenzimmer">Im Klassenzimmer</option>
                 <option value="Andere">Anderes Thema</option>
               </select>
             </label>
 
             <label>
-              Klassenstufe
-              <input id="grade" name="grade" type="text" maxlength="60" placeholder="z. B. 3. Klasse" required />
+              Alter
+              <input id="age" name="age" type="text" maxlength="60" placeholder="z. B. 8–9 Jahre" required />
             </label>
 
             <label>
-              Lernvoraussetzungen
+              Voraussetzungen
               <input
-                id="level"
-                name="level"
+                id="prerequisites"
+                name="prerequisites"
                 type="text"
                 maxlength="160"
                 placeholder="z. B. DaZ, heterogene Lerngruppe"
@@ -100,6 +108,7 @@
           </div>
           <div class="result-actions">
             <button id="copy-button" type="button" class="secondary">Kopieren</button>
+            <button id="pdf-button" type="button" class="secondary">PDF herunterladen</button>
             <button id="print-button" type="button" class="secondary">Drucken</button>
           </div>
         </div>
@@ -139,8 +148,13 @@
       </section>
 
       <section>
+        <h4>Wortschatzliste</h4>
+        <ul class="vocabulary"></ul>
+      </section>
+
+      <section>
         <h4>Spiel- und Übungsideen</h4>
-        <ul class="games"></ul>
+        <div class="games"></div>
       </section>
 
       <section>
@@ -154,6 +168,7 @@
       </section>
     </template>
 
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
     <script src="app.js"></script>
   </body>
 </html>
