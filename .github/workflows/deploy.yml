@@ -27,6 +27,14 @@ jobs:
         uses: actions/configure-pages@v5
         with:
           enablement: true
+      - name: Add deployment info
+        run: |
+          cat > deployment-info.js <<EOF
+          window.DEPLOYMENT_INFO = {
+            version: "${GITHUB_SHA::7}",
+            deployedAt: "$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+          };
+          EOF
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v4
         with:

@@ -7,6 +7,15 @@ const template = document.querySelector("#concept-template");
 const categorySelect = document.querySelector("#category");
 const customCategoryField = document.querySelector("#custom-category-field");
 const customCategoryInput = document.querySelector("#custom-category");
+const deploymentInfo = document.querySelector("#deployment-info");
+
+function renderDeploymentInfo() {
+  const { version, deployedAt } = window.DEPLOYMENT_INFO ?? {};
+  const deploymentDate = deployedAt
+    ? new Intl.DateTimeFormat("de-DE", { dateStyle: "medium", timeStyle: "short" }).format(new Date(deployedAt))
+    : "Noch nicht veröffentlicht";
+  deploymentInfo.textContent = `App-Version ${version ?? "lokal"} · Letztes Deployment: ${deploymentDate}`;
+}
 
 function updateCustomCategoryField() {
   const isCustomCategory = categorySelect.value === "Andere";
@@ -21,6 +30,7 @@ function updateCustomCategoryField() {
 
 categorySelect.addEventListener("change", updateCustomCategoryField);
 updateCustomCategoryField();
+renderDeploymentInfo();
 
 function appendList(container, values) {
   container.replaceChildren(
