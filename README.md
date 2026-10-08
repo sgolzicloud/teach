@@ -1,4 +1,4 @@
-# Konzeptplaner
+# Idas Konzeptplaner
 
 Eine GitHub-Pages-Webseite zum Erstellen, Bearbeiten und Drucken von Konzeptionen für Deutsch-Lerneinheiten mit 15, 30, 45 oder 60 Minuten. Die Oberfläche ruft einen Cloudflare Worker auf, der die OpenAI API sicher serverseitig verwendet.
 

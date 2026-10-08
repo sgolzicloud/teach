@@ -90,6 +90,14 @@ function renderGames(container, games) {
   );
 }
 
+function conceptFileName() {
+  const title = conceptOutput.querySelector("h3")?.textContent || "konzeption-lerneinheit";
+  return title
+    .toLocaleLowerCase("de-DE")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+}
+
 function renderConcept(concept) {
   const fragment = template.content.cloneNode(true);
   fragment.querySelector("h3").textContent = concept.title;
@@ -173,12 +181,43 @@ document.querySelector("#pdf-button").addEventListener("click", () => {
     y += lines.length * lineHeight;
   });
 
-  const title = conceptOutput.querySelector("h3")?.textContent || "konzeption-lerneinheit";
-  const fileName = title
-    .toLocaleLowerCase("de-DE")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "");
-  pdf.save(`${fileName || "konzeption-lerneinheit"}.pdf`);
+  pdf.save(`${conceptFileName() || "konzeption-lerneinheit"}.pdf`);
+});
+
+document.querySelector("#word-button").addEventListener("click", async () => {
+  const docx = window.docx;
+  if (!docx) {
+    statusMessage.classList.add("error");
+    statusMessage.textContent = "Der Word-Download ist derzeit nicht verfügbar.";
+    return;
+  }
+
+  const paragraphs = conceptOutput.innerText
+    .split("\n")
+    .filter((line) => line.trim())
+    .map(
+      (line) =>
+        new docx.Paragraph({
+          text: line,
+          spacing: { after: 120 },
+        }),
+    );
+  const document = new docx.Document({
+    sections: [{ children: paragraphs }],
+  });
+
+  try {
+    const blob = await docx.Packer.toBlob(document);
+    const downloadUrl = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = downloadUrl;
+    link.download = `${conceptFileName() || "konzeption-lerneinheit"}.docx`;
+    link.click();
+    URL.revokeObjectURL(downloadUrl);
+  } catch {
+    statusMessage.classList.add("error");
+    statusMessage.textContent = "Die Word-Datei konnte nicht erstellt werden.";
+  }
 });
 
 document.querySelector("#copy-button").addEventListener("click", async () => {
