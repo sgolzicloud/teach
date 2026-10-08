@@ -5,25 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="KI-gestützte Unterrichtskonzepte für 45-minütige Deutschstunden erstellen, bearbeiten und drucken."
+      content="KI-gestützte Konzeptionen für Deutsch-Lerneinheiten erstellen, bearbeiten und herunterladen."
     />
-    <title>Unterrichtsplaner | Deutsch</title>
+    <title>Konzeptplaner | Deutsch</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <header class="site-header">
       <div class="container">
-        <p class="eyebrow">Unterricht vorbereiten</p>
-        <h1>Unterrichtsplaner</h1>
+        <p class="eyebrow">Deutsch mit Ideen füllen</p>
+        <h1>Konzeptplaner</h1>
         <p class="intro">
-          Erstelle eine anpassbare Konzeption für eine 45-minütige Deutschstunde.
+          Erstelle eine anpassbare Konzeption für deine nächste Deutsch-Lerneinheit.
         </p>
       </div>
     </header>
 
     <main class="container">
       <section class="panel" aria-labelledby="input-heading">
-        <h2 id="input-heading">Stunde beschreiben</h2>
+        <h2 id="input-heading">Lerneinheit beschreiben</h2>
         <form id="concept-form">
           <div class="form-grid">
             <label>
@@ -44,6 +44,16 @@
                 <option value="Im Schulhaus">Im Schulhaus</option>
                 <option value="Im Klassenzimmer">Im Klassenzimmer</option>
                 <option value="Andere">Anderes Thema</option>
+              </select>
+            </label>
+
+            <label>
+              Dauer der Lerneinheit
+              <select id="duration-minutes" name="durationMinutes" required>
+                <option value="15">15 Minuten</option>
+                <option value="30">30 Minuten</option>
+                <option value="45" selected>45 Minuten</option>
+                <option value="60">60 Minuten</option>
               </select>
             </label>
 
@@ -94,7 +104,7 @@
           </label>
 
           <div class="actions">
-            <button id="generate-button" type="submit">Konzeption erstellen</button>
+            <button id="generate-button" type="submit">Konzept erstellen</button>
             <p id="form-status" class="status" aria-live="polite"></p>
           </div>
         </form>
@@ -104,7 +114,7 @@
         <div class="result-header">
           <div>
             <p class="eyebrow">Entwurf</p>
-            <h2 id="result-heading">Unterrichtskonzeption</h2>
+            <h2 id="result-heading">Konzeption für die Lerneinheit</h2>
           </div>
           <div class="result-actions">
             <button id="copy-button" type="button" class="secondary">Kopieren</button>
@@ -138,7 +148,7 @@
       </section>
 
       <section>
-        <h4>Stundenverlauf</h4>
+        <h4>Verlauf der Lerneinheit</h4>
         <div class="timeline"></div>
       </section>
 

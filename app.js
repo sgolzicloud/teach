@@ -118,6 +118,7 @@ form.addEventListener("submit", async (event) => {
   const values = new FormData(form);
   const payload = Object.fromEntries(values.entries());
   payload.studentCount = payload.studentCount ? Number(payload.studentCount) : null;
+  payload.durationMinutes = Number(payload.durationMinutes);
 
   generateButton.disabled = true;
   statusMessage.classList.remove("error");
@@ -172,12 +173,12 @@ document.querySelector("#pdf-button").addEventListener("click", () => {
     y += lines.length * lineHeight;
   });
 
-  const title = conceptOutput.querySelector("h3")?.textContent || "unterrichtskonzeption";
+  const title = conceptOutput.querySelector("h3")?.textContent || "konzeption-lerneinheit";
   const fileName = title
     .toLocaleLowerCase("de-DE")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
-  pdf.save(`${fileName || "unterrichtskonzeption"}.pdf`);
+  pdf.save(`${fileName || "konzeption-lerneinheit"}.pdf`);
 });
 
 document.querySelector("#copy-button").addEventListener("click", async () => {
