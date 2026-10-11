@@ -135,6 +135,7 @@ button {
 input,
 select,
 textarea {
+  font-size: 1rem;
   min-width: 0;
   width: 100%;
   max-width: 100%;
