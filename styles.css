@@ -17,6 +17,7 @@
 
 body {
   margin: 0;
+  overflow-x: clip;
   color: var(--ink);
   background:
     radial-gradient(circle at 8% 18%, #ffe3bd 0, transparent 20rem),
