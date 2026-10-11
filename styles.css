@@ -107,6 +107,10 @@ h2 {
   gap: 0.4rem 1.2rem;
 }
 
+.form-grid > label {
+  min-width: 0;
+}
+
 label {
   display: grid;
   gap: 0.45rem;
@@ -130,7 +134,9 @@ button {
 input,
 select,
 textarea {
+  min-width: 0;
   width: 100%;
+  max-width: 100%;
   padding: 0.8rem 0.9rem;
   color: var(--ink);
   background: rgb(255 255 255 / 82%);
